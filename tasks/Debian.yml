@@ -1,0 +1,21 @@
+---
+
+- import_role:
+    name: t18s.fr_pkg
+  vars:
+    pkg_list: [ 'logrotate' ]
+
+- name: delete the configuration
+  file:
+    path: "/etc/logrotate.d/{{ logrotate_config_name }}.conf"
+    state: absent
+  when: logrotate_config_state | default('present') == 'absent'
+
+- name: create the configuration
+  template:
+    src: Debian_logrotate.conf.j2
+    dest: "/etc/logrotate.d/{{ logrotate_config_name }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  when: logrotate_config_state | default('present') == 'present'

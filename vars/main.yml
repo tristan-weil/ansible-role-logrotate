@@ -1,0 +1,18 @@
+---
+
+logrotate_when_map:
+  logrotate:
+    hourly: hourly
+    daily: daily
+    weekly: weekly
+    monthly: monthly
+    yearly: yearly
+  newsyslog:
+    hourly: 1
+    daily: $D0
+    weekly: $W1D0
+    monthly: $M1D0
+    yearly: $Y1D0
+
+logrotate_newsyslog_flags: "{% if logrotate_compress is defined and logrotate_compress == 'True' %}Z{% endif %}{% if logrotate_binary is defined and logrotate_binary == 'True' %}B{% endif %}{% if logrotate_mail is defined %}M{% endif %}"
+logrotate_newsyslog_maxsize: "{% if logrotate_maxsize is defined %}{{ logrotate_maxsize * 1024 }}{% else %}*{% endif %}"

@@ -1,0 +1,25 @@
+{{ logrotate_logfile }} {
+    missingok
+    notifempty
+    rotate {{ logrotate_archives_count }}
+{% if logrotate_when is defined %}
+    {{ logrotate_when_map['logrotate'][logrotate_when] }}
+{% endif %}
+{% if logrotate_owner is defined and logrotate_group is defined and logrotate_mode is defined %}
+    create {{ logrotate_mode }} {{ logrotate_owner }} {{ logrotate_group }}
+{% endif %}
+{% if logrotate_maxsize is defined %}
+    maxsize {{ logrotate_maxsize }}
+{% endif %}
+{% if logrotate_compress is defined and logrotate_compress == 'True' %}
+    compress
+{% endif %}
+{% if logrotate_mail is defined %}
+    mail {{ logrotate_mail }}
+{% endif %}
+{% if logrotate_command is defined %}
+    postrotate
+        {{ logrotate_command }}
+    endscript
+{% endif %}
+}
