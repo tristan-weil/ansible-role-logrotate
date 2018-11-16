@@ -1,6 +1,6 @@
 # Ansible Role: logrotate
 
-An Ansible Role that configures the logs rotation system.
+An Ansible Role that configures a log rotation service.
 
 **NOTE**: only common parameters for both `logrotate` (Linux) and `newsyslog` (OpenBSD) are available.
 The objective of this role is to stay simple.
@@ -9,10 +9,10 @@ The objective of this role is to stay simple.
 
 Available variables are listed below, along with default values (see `defaults/main.yml` and `vars/main.yml`):
 
-    logrotate_config_state: present
+    logrotate_config_state: present             # present|absent
 
     logrotate_logfile: [mandatory]              # the path to the logfile (or a list of pathes if `logrotate` is used)
-    logrotate_owner: [optional]                 # the owner of the new logfile
+    logrotate_user: [optional]                  # the owner of the new logfile
     logrotate_group: [optional]                 # the group of the new logfile
     logrotate_mode: "640"                       # the mode of the new logfile
     logrotate_archives_count: 7                 # the number of archives to keep
@@ -49,7 +49,7 @@ The variables to configure the log rotation behaviour.
 
 ## Todo
 
-None.
+Make it available for OpenBSD.
 
 ## License
 

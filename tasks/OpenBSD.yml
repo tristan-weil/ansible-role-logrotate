@@ -11,4 +11,5 @@
   lineinfile:
     path: /etc/newsyslog.conf
     regexp: '^{{ logrotate_logfile }}\s+'
-    line: "{{ logrotate_logfile }}\t{{ logrotate_owner }}:{{ logrotate_group | default(logrotate_owner) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
+    line: "{{ logrotate_logfile }}\t{{ logrotate_user }}:{{ logrotate_group | default(logrotate_user) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
+  when: logrotate_config_state | default('present') == 'present'

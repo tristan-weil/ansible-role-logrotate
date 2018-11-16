@@ -9,8 +9,8 @@
 {% if logrotate_when is defined %}
     {{ __logrotate_when_map['logrotate'][logrotate_when] }}
 {% endif %}
-{% if logrotate_owner is defined and logrotate_group is defined and logrotate_mode is defined %}
-    create {{ logrotate_mode }} {{ logrotate_owner }} {{ logrotate_group }}
+{% if logrotate_user is defined and logrotate_group is defined and logrotate_mode is defined %}
+    create {{ logrotate_mode }} {{ logrotate_user }} {{ logrotate_group }}
 {% endif %}
 {% if logrotate_maxsize_in_bytes is defined %}
     maxsize {{ logrotate_maxsize_in_bytes }}
