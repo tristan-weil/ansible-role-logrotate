@@ -1,9 +1,5 @@
 ---
 
-- name:
-  set_facts:
-    __logrotate_newsyslog_flags: {% if logrotate_compress %}Z{% endif %}
-
 - name: delete the configuration
   lineinfile:
     path: /etc/newsyslog.conf
@@ -15,4 +11,4 @@
   lineinfile:
     path: /etc/newsyslog.conf
     regexp: '^{{ logrotate_logfile }}\s+'
-    line: "{{ logrotate_logfile }}\t{{ logrotate_owner }}:{{ logrotate_group | default(logrotate_owner) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ logrotate_newsyslog_maxsize }}\t{{ logrotate_when_map['newsyslog'][logrotate_when] }}\t{{ logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
+    line: "{{ logrotate_logfile }}\t{{ logrotate_owner }}:{{ logrotate_group | default(logrotate_owner) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"

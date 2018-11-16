@@ -11,22 +11,22 @@ Available variables are listed below, along with default values (see `defaults/m
 
     logrotate_config_state: present
 
-    logrotate_logfile: [mandatory]      # the path to the logfile
-    logrotate_owner: [optional]         # the owner of the new logfile
-    logrotate_group: [optional]         # the group of the new logfile
-    logrotate_mode: "640"               # the mode of the new logfile
-    logrotate_archives_count: 7         # the number of archives to keep
-    logrotate_maxsize: [optional]       # the max size of the logfile before rotation
-    logrotate_when: weekly              # the delay before rotation (valid values are in `vars/main.yml`)
-    logrotate_compress: True            # True|False True to compress to the archived logfile
-    logrotate_mail: [optional]          # the mail to contact after rotation
-    logrotate_command: [optional]       # the command to execute after rotation
+    logrotate_logfile: [mandatory]              # the path to the logfile (or a list of pathes if `logrotate` is used)
+    logrotate_owner: [optional]                 # the owner of the new logfile
+    logrotate_group: [optional]                 # the group of the new logfile
+    logrotate_mode: "640"                       # the mode of the new logfile
+    logrotate_archives_count: 7                 # the number of archives to keep
+    logrotate_maxsize_in_bytes: [optional]      # the max size in bytes of the logfile before rotation
+    logrotate_when: weekly                      # the delay before rotation, see valid values are in `vars/main.yml` (or a newsyslog delay format if `newsyslog` is used)
+    logrotate_compress: True                    # True|False True to compress to the archived logfile
+    logrotate_mail: [optional]                  # the mail to contact after rotation
+    logrotate_command: [optional]               # the command to execute after rotation
     
     # newsyslog specific
-    logrotate_binary: False             # True|False True if the file is in binary
+    logrotate_binary: False                     # True|False True if the file is in binary
 
     # logrotate specific
-    logrotate_config_name: [mandatory]  # the config name
+    logrotate_config_name: [mandatory]          # the config name
 
 The variables to configure the log rotation behaviour.
 
@@ -43,7 +43,7 @@ The variables to configure the log rotation behaviour.
           logrotate_logfile: /var/log/webserver/access.log
           logrotate_archives_count: 7
           logrotate_when: daily
-          logrotate_maxsize: 268435456 # 256M
+          logrotate_maxsize_in_bytes: 268435456 # 256M
           logrotate_compress: True
           logrotate_command: "pkill -HUP -u www-data -U www-data -x httpd"
 

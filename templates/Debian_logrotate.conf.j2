@@ -1,10 +1,13 @@
-{{ logrotate_logfile }}
+{% for logfile in __logrotate_logrotate_logfiles %}
+{{ logfile }}
+{% endfor %}
 {
     missingok
     notifempty
+    sharedscripts
     rotate {{ logrotate_archives_count }}
 {% if logrotate_when is defined %}
-    {{ logrotate_when_map['logrotate'][logrotate_when] }}
+    {{ __logrotate_when_map['logrotate'][logrotate_when] }}
 {% endif %}
 {% if logrotate_owner is defined and logrotate_group is defined and logrotate_mode is defined %}
     create {{ logrotate_mode }} {{ logrotate_owner }} {{ logrotate_group }}
