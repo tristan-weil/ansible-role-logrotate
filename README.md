@@ -11,7 +11,7 @@ Available variables are listed below, along with default values (see `defaults/m
 
     logrotate_config_state: present             # present|absent
 
-    logrotate_logfile: [mandatory]              # the path to the logfile (or a list of pathes if `logrotate` is used)
+    logrotate_log_path: [mandatory]              # the path to the logfile (or a list of pathes if `logrotate` is used)
     logrotate_user: [optional]                  # the owner of the new logfile
     logrotate_group: [optional]                 # the group of the new logfile
     logrotate_mode: "640"                       # the mode of the new logfile
@@ -40,7 +40,7 @@ The variables to configure the log rotation behaviour.
       roles:
         - role: t18s.fr_logrotate
           logrotate_config_name: webserver
-          logrotate_logfile: /var/log/webserver/access.log
+          logrotate_log_path: /var/log/webserver/access.log
           logrotate_archives_count: 7
           logrotate_when: daily
           logrotate_maxsize_in_bytes: 268435456 # 256M

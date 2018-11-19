@@ -7,14 +7,14 @@
 
 - name: delete the configuration
   file:
-    path: "/etc/logrotate.d/{{ logrotate_config_name }}.conf"
+    path: "/etc/logrotate.d/{{ logrotate_config_name }}"
     state: absent
   when: logrotate_config_state | default('present') == 'absent'
 
 - name: create the configuration
   template:
     src: Debian_logrotate.conf.j2
-    dest: "/etc/logrotate.d/{{ logrotate_config_name }}.conf"
+    dest: "/etc/logrotate.d/{{ logrotate_config_name }}"
     owner: root
     group: root
     mode: "0644"

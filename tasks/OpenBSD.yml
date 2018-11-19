@@ -3,13 +3,13 @@
 - name: delete the configuration
   lineinfile:
     path: /etc/newsyslog.conf
-    regexp: '^{{ logrotate_logfile }}\s+'
+    regexp: '^{{ logrotate_log_path }}\s+'
     state: absent
   when: logrotate_config_state | default('present') == 'absent'
 
 - name: create the configuration
   lineinfile:
     path: /etc/newsyslog.conf
-    regexp: '^{{ logrotate_logfile }}\s+'
-    line: "{{ logrotate_logfile }}\t{{ logrotate_user }}:{{ logrotate_group | default(logrotate_user) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
+    regexp: '^{{ logrotate_log_path }}\s+'
+    line: "{{ logrotate_log_path }}\t{{ logrotate_user }}:{{ logrotate_group | default(logrotate_user) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
   when: logrotate_config_state | default('present') == 'present'

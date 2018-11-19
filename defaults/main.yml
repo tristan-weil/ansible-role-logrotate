@@ -2,7 +2,7 @@
 
 logrotate_config_state: present
 
-#logrotate_logfile:
+#logrotate_log_path:
 #logrotate_user:
 #logrotate_group:
 logrotate_mode: "640"
