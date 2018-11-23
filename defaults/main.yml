@@ -2,19 +2,19 @@
 
 logrotate_config_state: present
 
-#logrotate_log_path:
-#logrotate_user:
-#logrotate_group:
+# logrotate_log_path:
+# logrotate_user:
+# logrotate_group:
 logrotate_mode: "640"
 logrotate_archives_count: 7
-#logrotate_maxsize_in_bytes:
+# logrotate_maxsize_in_bytes:
 logrotate_when: weekly
 logrotate_compress: True
-#logrotate_mail:
-#logrotate_command:
+# logrotate_mail:
+# logrotate_command:
 
 # newsyslog specific
 logrotate_binary: False
 
 # logrotate specific
-#logrotate_config_name:
+# logrotate_config_name:

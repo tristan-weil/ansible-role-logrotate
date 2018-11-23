@@ -3,7 +3,7 @@
 - import_role:
     name: t18s.fr_pkg
   vars:
-    pkg_list: [ 'logrotate' ]
+    pkg_list: ['logrotate']
 
 - name: delete the configuration
   file:
