@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  name: 'Verify'
+  become: True
+  gather_facts: True
+  vars:
+    __verify_conf_by_os_family:
+      Debian: '/etc/logrotate.d/testinfra1'
+      OpenBSD: '/etc/newsyslog.conf'
+
+    __verify_cmd_by_os_family:
+      Debian: 'logrotate -d /etc/logrotate.d/testinfra2 2>&1 | grep -v error'
+      OpenBSD: 'newsyslog -Fn'
+
+  tasks:
+    - name: 'Check the content of the configuration file'
+      slurp:
+        path: "{{ __verify_conf_by_os_family[ ansible_facts['os_family'] ] }}"
+      register: __verify_slurp
+      failed_when: not __verify_slurp.content | b64decode | regex_search('/testinfra1.log')
+
+    - name: 'Check configuration file validity'
+      shell: "{{ __verify_cmd_by_os_family[ ansible_facts['os_family'] ] }}"
+      register: __verify_cmd
+      failed_when: __verify_cmd.rc != 0

@@ -1,0 +1,32 @@
+---
+
+- hosts: all
+  name: 'Converge'
+  become: True
+
+  tasks:
+    - import_role:
+        name: 'ansible-role-logrotate'
+      vars:
+        logrotate_configs_list:
+          - name: 'testinfra1'
+            log_fic_path: '/testinfra1.log'
+            log_fic_user: 'vagrant'
+            log_fic_group: 'vagrant'
+            log_fic_mode: '0640'
+            compress: True
+            archives_count: 42
+            when: 'daily'
+            binary: True
+
+          - name: 'testinfra2'
+            log_fic_path:
+              - '/testinfra2a.log'
+              - '/testinfra2b.log'
+            log_fic_user: 'vagrant'
+            log_fic_group: 'vagrant'
+            log_fic_mode: '0640'
+            compress: True
+            archives_count: 42
+            when: 'daily'
+            command: 'echo ohai'

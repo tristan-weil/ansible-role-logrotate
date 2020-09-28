@@ -1,15 +1,44 @@
 ---
 
-- name: delete the configuration
-  lineinfile:
-    path: /etc/newsyslog.conf
-    regexp: '^{{ logrotate_log_path }}\s+'
-    state: absent
-  when: logrotate_config_state | default('present') == 'absent'
+- name: 'convert the configurations'
+  set_fact:
+    __logrotate_configs_list_fixed: >-
+      {% set result = [] -%}
+      {% for i in logrotate_configs_list -%}
+      {% if i.log_fic_path is string -%}
+      {% set dummy = i.update({ 'log_fic_path': [i.log_fic_path] }) -%}
+      {% endif -%}
+      {% set dummy = result.append(i) -%}
+      {% endfor -%}
+      {{ result }}
 
-- name: create the configuration
+- name: 'delete the configuration'
   lineinfile:
-    path: /etc/newsyslog.conf
-    regexp: '^{{ logrotate_log_path }}\s+'
-    line: "{{ logrotate_log_path }}\t{{ logrotate_user }}:{{ logrotate_group | default(logrotate_user) }}\t{{ logrotate_mode }}\t{{ logrotate_count }}\t{{ __logrotate_newsyslog_maxsize }}\t{{ __logrotate_newsyslog_when }}\t{{ __logrotate_newsyslog_flags }}\t{% if logrotate_mail is defined %}{{ logrotate_mail }}\t{% endif %}{% if logrotate_command is defined %}\"{{ logrotate_command }}\"{% endif %}"
-  when: logrotate_config_state | default('present') == 'present'
+    path: '/etc/newsyslog.conf'
+    regexp: '^{{ item[1] }}\s+'
+    state: 'absent'
+    validate: 'newsyslog -Fn -f %s'
+  when: >
+    item[0].state | default('present') == 'absent'
+  loop: "{{ lookup('subelements', __logrotate_configs_list_fixed, 'log_fic_path') }}"
+
+- name: 'create the configuration'
+  lineinfile:
+    path: '/etc/newsyslog.conf'
+    regexp: '^{{ item[1] }}\s+'
+    line: >-
+      {{ item[1] }}
+      {{ item[0].log_fic_user }}:{{ item[0].log_fic_group | default(item[0].log_fic_user) }}
+      {{ item[0].log_fic_mode | regex_replace('^\d(\d{3})$', '\1') }}
+      {{ item[0].archives_count }}
+      {% if item[0].maxsize_in_bytes is defined %}{{ item[0].maxsize_in_bytes | int / 1024 }}{% else %}*{% endif %}
+      {{ _logrotate_when_map['newsyslog'][ item[0].when | default('all') ] | default('*') }}
+      {% if item[0].compress | default(True) | bool -%}Z{% endif -%}
+      {% if item[0].binary | default(False) | bool -%}B{% endif -%}
+      {% if item[0].mail is defined %}M{% endif %}
+      {% if item[0].mail is defined %}{{ item[0].mail }}{% endif %}
+      {% if item[0].command is defined %}"{{ item[0].command }}"{% endif %}
+    validate: 'newsyslog -Fn -f %s'
+  when: >
+    item[0].state | default('present') == 'present'
+  loop: "{{ lookup('subelements', __logrotate_configs_list_fixed, 'log_fic_path') }}"

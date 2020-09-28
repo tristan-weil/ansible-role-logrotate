@@ -1,29 +1,37 @@
-{% for logfile in __logrotate_logrotate_log_paths %}
+{% set __logrotate_logrotate_log_fic_paths = [] -%}
+{% if item.log_fic_path is defined -%}
+{% if item.log_fic_path is string -%}
+{% set dummy = __logrotate_logrotate_log_fic_paths.append(item.log_fic_path) -%}
+{% elif item.log_fic_path is iterable -%}
+{% set __logrotate_logrotate_log_fic_paths = item.log_fic_path -%}
+{% endif -%}
+{% endif -%}
+{% for logfile in __logrotate_logrotate_log_fic_paths %}
 {{ logfile }}
 {% endfor %}
 {
     missingok
     notifempty
     sharedscripts
-    rotate {{ logrotate_archives_count }}
-{% if logrotate_when is defined %}
-    {{ __logrotate_when_map['logrotate'][logrotate_when] }}
+    rotate {{ item.archives_count }}
+{% if item.when is defined and item.when in _logrotate_when_map['logrotate'].keys() %}
+    {{ _logrotate_when_map['logrotate'][item.when] }}
 {% endif %}
-{% if logrotate_user is defined and logrotate_group is defined and logrotate_mode is defined %}
-    create {{ logrotate_mode }} {{ logrotate_user }} {{ logrotate_group }}
+{% if item.log_fic_user is defined and item.log_fic_mode is defined %}
+    create {{ item.log_fic_mode }} {{ item.log_fic_user }} {{ item.log_fic_group | default(item.log_fic_user) }}
 {% endif %}
-{% if logrotate_maxsize_in_bytes is defined %}
-    maxsize {{ logrotate_maxsize_in_bytes }}
+{% if item.maxsize_in_bytes is defined %}
+    maxsize {{ item.maxsize_in_bytes }}
 {% endif %}
-{% if logrotate_compress is defined and logrotate_compress | bool %}
+{% if item.compress | default(True) | bool %}
     compress
 {% endif %}
-{% if logrotate_mail is defined %}
-    mail {{ logrotate_mail }}
+{% if item.mail is defined %}
+    mail {{ item.mail }}
 {% endif %}
-{% if logrotate_command is defined %}
+{% if item.command is defined %}
     postrotate
-        {{ logrotate_command }}
+        {{ item.command }}
     endscript
 {% endif %}
 }

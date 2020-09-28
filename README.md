@@ -2,69 +2,91 @@
 
 An Ansible Role that configures a log rotation service.
 
-**NOTE**: only common parameters for both `logrotate` (Linux) and `newsyslog` (OpenBSD) are available.
-The objective of this role is to stay simple.
+[![Actions Status](https://github.com/tristan-weil/ansible-role-logrotate/workflows/molecule/badge.svg?branch=master)](https://github.com/tristan-weil/ansible-role-logrotate/actions)
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see `defaults/main.yml` and `vars/main.yml`):
+Available variables are listed below, (see also `defaults/main.yml`).
 
-    logrotate_config_state: present             # present|absent
+### logrotate
 
-    logrotate_log_path: [mandatory]              # the path to the logfile (or a list of pathes if `logrotate` is used)
-    logrotate_user: [optional]                  # the owner of the new logfile
-    logrotate_group: [optional]                 # the group of the new logfile
-    logrotate_mode: "640"                       # the mode of the new logfile
-    logrotate_archives_count: 7                 # the number of archives to keep
-    logrotate_maxsize_in_bytes: [optional]      # the max size in bytes of the logfile before rotation
-    logrotate_when: weekly                      # the delay before rotation, see valid values are in `vars/main.yml` (or a newsyslog delay format if `newsyslog` is used)
-    logrotate_compress: True                    # True|False True to compress to the archived logfile
-    logrotate_mail: [optional]                  # the mail to contact after rotation
-    logrotate_command: [optional]               # the command to execute after rotation
-    
-    # newsyslog specific
-    logrotate_binary: False                     # True|False True if the file is in binary
+Mandatory variables:
 
-    # logrotate specific
-    logrotate_config_name: [mandatory]          # the config name
+| Variable      | Description |
+| :------------ | :---------- |
 
-The variables to configure the log rotation behaviour.
+Optional variables:
 
-## Dependencies
+| Variable      | Default | Description |
+| :------------ | :------ | :---------- |
+| logrotate_configs_list | [] | a list of <*logrotate entry*> |
 
-- t18s.fr_pkg
+### <*logrotate entry*>
+
+A *logrotate entry* represents the parameters used to configure a logrotate configuration.
+
+Mandatory variables:
+
+| Variable      | Description |
+| :------------ | :---------- |
+| log_fic_path  | the path to the logfile (or a list of pathes) |
+| log_fic_mode  | the mode of the new logfile |
+| archives_count | the number of archives to keep |
+
+Optional variables:
+
+| Variable      | Default | Description |
+| :------------ | :------ | :---------- |
+| state         | present | *present / absent*: add or delete the configuration |
+| log_fic_user  |         | the user of the logfile (or keep the used one) |
+| log_fic_group |         | the group of the logfile (or keep the used one) |
+| when          |         | the delay before rotation, see valid values are in `vars/main.yml` |
+| compress      | True    | *True / False*: compress to the archived logfile
+| maxsize_in_bytes |      | the max size in bytes of the logfile before rotation
+| mail          |         | the mail to contact after rotation
+| command       |         | the command to execute after rotation
+| binary        | False   | *True / False*: enable binary mode (only OpenBSD)
 
 ## Example Playbook
 
-    - hosts: webservers
+    - hosts: 'webservers'
       roles:
-        - role: t18s.fr_logrotate
-          logrotate_config_name: webserver
-          logrotate_log_path: /var/log/webserver/access.log
-          logrotate_archives_count: 7
-          logrotate_when: daily
-          logrotate_maxsize_in_bytes: 268435456 # 256M
-          logrotate_compress: True
-          logrotate_command: "pkill -HUP -u www-data -U www-data -x httpd"
+        - role: 'ansible-role-logrotate'
+          logrotate_configs_list:
+            - name: 'testinfra1'
+              log_fic_path: /testinfra1.log
+              log_fic_user: vagrant
+              log_fic_group: vagrant
+              log_fic_mode: '0640'
+              compress: True
+              archives_count: 42
+              when: daily
+              binary: True
+
+            - name: 'testinfra2'
+              log_fic_path:
+                - /testinfra2a.log
+                - /testinfra2b.log
+              log_fic_user: vagrant
+              log_fic_group: vagrant
+              log_fic_mode: '0640'
+              compress: True
+              archives_count: 42
+              when: daily
+              command: "echo ohai"
 
 ## Todo
 
-Make it available for OpenBSD.
+None.
+
+## Dependencies
+
+See [requirements_galaxy.yml](https://github.com/tristan-weil/ansible-role-logrotate/blob/master/requirements_galaxy.yml)
+
+## Supported platforms
+
+See [meta/main.yml](https://github.com/tristan-weil/ansible-role-logrotate/blob/master/meta/main.yml)
 
 ## License
 
-```
-Copyright (c) 2018, 2019 Tristan Weil <titou@lab.t18s.fr>
-
-Permission to use, copy, modify, and distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-```
+See [LICENSE.md](https://github.com/tristan-weil/ansible-role-logrotate/blob/master/LICENSE.md)

@@ -3,31 +3,18 @@
 ##############################################################################
 # Variables
 ##############################################################################
-__logrotate_when_map:
+_logrotate_when_map:
   logrotate:
-    hourly: hourly
-    daily: daily
-    weekly: weekly
-    monthly: monthly
-    yearly: yearly
+    hourly: 'hourly'
+    daily: 'daily'
+    weekly: 'weekly'
+    monthly: 'monthly'
+    yearly: 'yearly'
+
   newsyslog:
-    hourly: 1
-    daily: $D0
-    weekly: $W1D0
-    monthly: $M1D0
-    yearly: $Y1D0
-
-__logrotate_newsyslog_flags: "{% if logrotate_compress is defined and logrotate_compress | bool %}Z{% endif %}{% if logrotate_binary is defined and logrotate_binary | bool %}B{% endif %}{% if logrotate_mail is defined %}M{% endif %}"
-__logrotate_newsyslog_maxsize: "{% if logrotate_maxsize_in_bytes is defined %}{{ logrotate_maxsize_in_bytes | int / 1024 }}{% else %}*{% endif %}"
-__logrotate_newsyslog_when: "{% if logrotate_when is not defined and logrotate_when not in __logrotate_when_map['newsyslog'].keys() %}*{% else %}{{ __logrotate_when_map['newsyslog'][logrotate_when] }}{% endif %}"
-
-__logrotate_logrotate_log_paths: >-
-  {% set result = [] -%}
-  {% if logrotate_log_path is defined -%}
-  {% if logrotate_log_path is string -%}
-  {% set dummy = result.append(logrotate_log_path) -%}
-  {% else -%}
-  {% set result = logrotate_log_path -%}
-  {% endif -%}
-  {% endif -%}
-  {{ result }}
+    hourly: '1'
+    daily: '$D0'
+    weekly: '$W1D0'
+    monthly: '$M1D0'
+    yearly: '$Y1D0'
+    all: '*'
