@@ -89,4 +89,4 @@ See [meta/main.yml](https://github.com/tristan-weil/ansible-role-logrotate/blob/
 
 ## License
 
-See [LICENSE.md](https://github.com/tristan-weil/ansible-role-logrotate/blob/master/LICENSE.md)
+See [LICENSE.md](LICENSE.md)
